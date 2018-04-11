@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MELTDOWN", "MELTDOWN\MELTDOWN.vcxproj", "{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Debug|x64.ActiveCfg = Debug|x64
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Debug|x64.Build.0 = Debug|x64
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Debug|x86.ActiveCfg = Debug|Win32
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Debug|x86.Build.0 = Debug|Win32
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Release|x64.ActiveCfg = Release|x64
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Release|x64.Build.0 = Release|x64
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Release|x86.ActiveCfg = Release|Win32
+		{4839792F-B3A2-46ED-ADFF-4F8FE7CADFAF}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A61B1C52-423F-448D-9054-848FB2DE81BD}
+	EndGlobalSection
+EndGlobal
