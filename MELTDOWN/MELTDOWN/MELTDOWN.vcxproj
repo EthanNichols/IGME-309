@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="LNK1112 Fix|Win32">
+      <Configuration>LNK1112 Fix</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="LNK1112 Fix|x64">
+      <Configuration>LNK1112 Fix</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -31,6 +39,12 @@
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -39,6 +53,12 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
@@ -59,10 +79,16 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -77,7 +103,38 @@
     <IncludePath>$(SolutionDir)include;$(SolutionDir)res;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)include\GL\lib;$(SolutionDir)include\Simplex\lib;$(SolutionDir)include\BasicX\lib;$(SolutionDir)include\SFML\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|Win32'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+    <ExecutablePath>$(SolutionDir)include\GL\bin;$(SolutionDir)include\Simplex\bin;$(SolutionDir)include\BasicX\bin;$(SolutionDir)include\SFML\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)res;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\lib;$(SolutionDir)include\Simplex\lib;$(SolutionDir)include\BasicX\lib;$(SolutionDir)include\SFML\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <ExecutablePath>$(SolutionDir)include\GL\bin;$(SolutionDir)include\Simplex\bin;$(SolutionDir)include\BasicX\bin;$(SolutionDir)include\SFML\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)res;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\lib;$(SolutionDir)include\Simplex\lib;$(SolutionDir)include\BasicX\lib;$(SolutionDir)include\SFML\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <ExecutablePath>$(SolutionDir)include\GL\bin;$(SolutionDir)include\Simplex\bin;$(SolutionDir)include\BasicX\bin;$(SolutionDir)include\SFML\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)res;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\lib;$(SolutionDir)include\Simplex\lib;$(SolutionDir)include\BasicX\lib;$(SolutionDir)include\SFML\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|x64'">
+    <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
+    <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
+    <ExecutablePath>$(SolutionDir)include\GL\bin;$(SolutionDir)include\Simplex\bin;$(SolutionDir)include\BasicX\bin;$(SolutionDir)include\SFML\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(SolutionDir)include;$(SolutionDir)res;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)include\GL\lib;$(SolutionDir)include\Simplex\lib;$(SolutionDir)include\BasicX\lib;$(SolutionDir)include\SFML\lib;$(LibraryPath)</LibraryPath>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Z_DELETE\</OutDir>
     <IntDir>$(SolutionDir)Z_DELETE\$(ProjectName)\$(Configuration)\</IntDir>
     <ExecutablePath>$(SolutionDir)include\GL\bin;$(SolutionDir)include\Simplex\bin;$(SolutionDir)include\BasicX\bin;$(SolutionDir)include\SFML\bin;$(ExecutablePath)</ExecutablePath>
@@ -104,12 +161,59 @@ copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
       <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <PostBuildEvent>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy executable to binary folder</Message>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LNK1112 Fix|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -141,11 +245,18 @@ copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(SolutionDir)include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx.lib;simplex.lib;sfml-system.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\include\imgui\imgui.cpp" />
