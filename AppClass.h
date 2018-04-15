@@ -12,17 +12,19 @@ Date: 2017/06
 
 #include "MyEntityManager.h"
 
+#include "World.h"
+
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
 class Application
 {
-	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
-	vector3 m_v3Creeper; //position of the creeper
-	quaternion m_qCreeper; //orientation for the creeper
+	MyEntityManager* m_pEntityMngr = nullptr; // Entity Manager
+	
+	World* m_pWorld = nullptr; // Game World
 		
 private:
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //programmer
+	String m_sProgrammer = "Team Meltdown"; //programmer
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?

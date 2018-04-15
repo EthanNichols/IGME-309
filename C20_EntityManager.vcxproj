@@ -109,6 +109,8 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyEntity.cpp" />
     <ClCompile Include="MyEntityManager.cpp" />
+    <ClCompile Include="Segment.cpp" />
+    <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\imgui\imconfig.h" />
@@ -122,6 +124,8 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="Main.h" />
     <ClInclude Include="MyEntity.h" />
     <ClInclude Include="MyEntityManager.h" />
+    <ClInclude Include="Segment.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\BTO.rc" />

@@ -1,4 +1,5 @@
 #include "AppClass.h"
+
 using namespace Simplex;
 void Application::InitVariables(void)
 {
@@ -9,11 +10,17 @@ void Application::InitVariables(void)
 		AXIS_Y);					//Up
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
-	
-	std::cout << "Hello" << std::endl;
 
 	//Entity Manager
 	m_pEntityMngr = MyEntityManager::GetInstance();
+
+	m_pEntityMngr->AddEntity("model_ship.obj", "Player");
+
+	// World
+	m_pWorld = World::GetInstance();
+	m_pWorld->m_pEntityMngr = m_pEntityMngr;
+
+	m_pWorld->DoInitialGeneration();
 }
 void Application::Update(void)
 {
