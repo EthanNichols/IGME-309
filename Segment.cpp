@@ -2,7 +2,7 @@
 
 Segment::Segment()
 {
-
+	m_pWorld = World::GetInstance();
 }
 
 Segment::~Segment()

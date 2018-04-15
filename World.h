@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "Simplex/Simplex.h"
-#include "MyEntity.h"
 #include "MyEntityManager.h"
 #include "Segment.h"
 
@@ -32,10 +31,6 @@ public:
 	static World* GetInstance();
 
 	void ReleaseInstance();
-
-	void GenNewSegment();
-
-	void MoveSegments();
 
 	void CycleSegments();
 };

@@ -1,5 +1,4 @@
 #include "World.h"
-using namespace Simplex;
 
 World* World::m_pInstance = nullptr;
 
@@ -41,4 +40,8 @@ void World::ReleaseInstance()
 		delete m_pInstance;
 		m_pInstance = nullptr;
 	}
+}
+
+void World::CycleSegments()
+{
 }

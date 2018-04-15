@@ -2,20 +2,16 @@
 
 #include <vector>
 
-#include "Simplex/Simplex.h"
-#include "MyEntity.h"
-#include "MyEntityManager.h"
-
-using namespace std;
-using namespace Simplex;
+#include "World.h"
 
 class Segment
 {
+	World* m_pWorld;
+	std::vector<MyEntity*> m_vObstacles;
+
 public:
 	Segment();
 	~Segment();
-
-	std::vector<MyEntity*> m_vObstacles;
 
 	void GenerateContents();
 };
