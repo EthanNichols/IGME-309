@@ -186,6 +186,8 @@ void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 	{
 		m_entityList.push_back(pTemp);
 		m_uEntityCount = m_entityList.size();
+	} else{
+		std::cout << "Error" << std::endl;
 	}
 }
 void Simplex::MyEntityManager::RemoveEntity(uint a_uIndex)
