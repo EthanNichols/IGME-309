@@ -69,11 +69,18 @@
       <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
+      <Command>copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying Shaders...</Message>
+      <Message>Copying files...</Message>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets" "$(SolutionDir)_Binary\Data\MOBJ" /e /y</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Copy assets</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -96,6 +103,12 @@
       <Command>copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
 xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>xcopy "$(ProjectDir)Assets" "$(SolutionDir)_Binary\Data\MOBJ" /e /y</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Copy assets</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\include\imgui\imgui.cpp" />
