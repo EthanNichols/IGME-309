@@ -405,7 +405,7 @@ void Application::ProcessKeyboard(void)
 	bool bMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
-	float fMultiplier = 3.0f;
+	float fMultiplier = 10.0f;
 
 	if (bMultiplier)
 		fMultiplier = 5.0f;
