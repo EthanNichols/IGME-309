@@ -14,15 +14,9 @@ void Application::InitVariables(void)
 	//Entity Manager
 	m_pEntityMngr = MyEntityManager::GetInstance();
 
-	for (int i = 0; i < 5; i++) {
-		m_pEntityMngr->AddEntity("models\\model_ground.obj", "ground_" + i);
-		matrix4 groundMatrix = IDENTITY_M4;
-		groundMatrix[3][2] = -(m_pEntityMngr->GetRigidBody()->GetHalfWidth().z * 2) * i;
-		m_pEntityMngr->SetModelMatrix(groundMatrix);
-	}
-
-	m_pEntityMngr->AddEntity("models\\model_ship.obj", "ship");
-	m_pEntityMngr->SetModelMatrix(IDENTITY_M4);
+	//Create the player and chunks for the game
+	Generation::GenerateChunks();
+	Player::CreatePlayer();
 }
 void Application::Update(void)
 {
@@ -52,34 +46,20 @@ void Application::Display(void)
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
-	static float speed = 0.1f;
-	static int offset = 5;
-
-	//Move the last entity added slowly to the right
-	matrix4 lastMatrix = m_pEntityMngr->GetModelMatrix("ship");// get the model matrix of the last added
-	lastMatrix *= glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, -speed)); //translate it
-	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
-
 	//Get the ship position and set the camera offset relative to the ship
-	vector3 shipPos = vector3(lastMatrix[3][0], lastMatrix[3][1], lastMatrix[3][2]);
+	vector3 shipPos = Player::GetPosition();
 
 	//The specfic camera offset from the model is (15, 0, 60);
-	vector3 cameraPos = shipPos + vector3(15, 75, 120);
+	vector3 cameraPos = shipPos + vector3(0, 30, 100);
 
-	speed += 0.01f;
+	//Update the display of the player and the map
+	Player::Display();
+	Generation::Display();
 
 	//Update the camera position
-	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.5f, 1.0f), AXIS_Y);
+	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.3f, 0.7f), AXIS_Y);
 
-	for (int i = 0; i < 5; i++) {
-		String name = "ground_" + i;
-		matrix4 groundMatrix = m_pEntityMngr->GetModelMatrix(name);
-		if (groundMatrix[3][2] - (m_pEntityMngr->GetRigidBody(name)->GetHalfWidth().z * 2) > shipPos.z) {
-			groundMatrix[3][2] = -(m_pEntityMngr->GetRigidBody(name)->GetHalfWidth().z * 2) * offset;
-			m_pEntityMngr->SetModelMatrix(groundMatrix, name);
-			offset++;
-		}
-	}
+	Generation::Display();
 
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
