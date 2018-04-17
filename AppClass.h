@@ -12,6 +12,9 @@ Date: 2017/06
 
 #include "MyEntityManager.h"
 
+#include "Generation.h"
+#include "Player.h"
+
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
