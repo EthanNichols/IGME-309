@@ -25,7 +25,7 @@ class Application
 	quaternion m_qCreeper; //orientation for the creeper
 		
 private:
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //programmer
+	String m_sProgrammer = "Team Meltdown"; //programmer
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -40,7 +40,7 @@ private:
 
 	float m_fMovementSpeed = 0.1f; //how fast the camera will move
 
-	vector3 m_v3Mouse = vector3(); //position of the mouse in the window
+	
 	bool m_bFPC = false;// First Person Camera flag
 	bool m_bArcBall = false;// ArcBall flag
 	quaternion m_qArcBall; //ArcBall quaternion
@@ -62,6 +62,12 @@ private:
 	sf::Music m_soundBGM; //background music
 
 public:
+
+	vector3 m_v3Mouse = vector3(); //position of the mouse in the window
+	vector3 m_v3LastMouse = vector3();
+
+	bool m_bRolling;
+
 #pragma region Constructor / Run / Destructor
 	/*
 	USAGE: Constructor

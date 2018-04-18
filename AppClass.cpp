@@ -1,6 +1,7 @@
 #include "AppClass.h"
 
 using namespace Simplex;
+
 void Application::InitVariables(void)
 {
 	//Set the position and target of the camera
@@ -23,12 +24,6 @@ void Application::Update(void)
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
-	//Is the ArcBall active?
-	ArcBall();
-
-	//Is the first person camera active?
-	CameraRotation();
-
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 
@@ -50,25 +45,26 @@ void Application::Display(void)
 	vector3 shipPos = Player::GetPosition();
 
 	//The specfic camera offset from the model is (15, 0, 60);
-	vector3 cameraPos = shipPos + vector3(0, 30, 100);
+	vector3 cameraPos = shipPos + vector3(0, 10, 25);
 
 	//Update the display of the player and the map
 	Player::Display();
 	Generation::Display();
 
 	//Update the camera position
-	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.3f, 0.7f), AXIS_Y);
+	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
 
 	Generation::Display();
 
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
-
 	//draw gui
 	DrawGUI();
 
 	//end the current frame (internally swaps the front and back buffers)
 	m_pWindow->display();
+
+	m_v3LastMouse = m_v3Mouse;
 }
 void Application::Release(void)
 {
@@ -78,3 +74,80 @@ void Application::Release(void)
 	//release GUI
 	ShutdownGUI();
 }
+
+#pragma region Ship Controls
+
+void Application::ProcessKeyboard(void)
+{
+	if (!m_bFocused)
+		return;
+
+	static float rotation = 0.0f;
+	float strafeSpeed = 0.5f;
+	float rollSpeed = 0.1f;
+
+	Simplex::matrix4 lastMatrix = m_pEntityMngr->GetModelMatrix("ship");
+
+	// Strafe right
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
+
+	// Strafe left
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
+
+	// Roll
+	float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
+	
+	if (m_bRolling) {
+		rotation -= deltaMouseX * rollSpeed;
+		lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
+	}
+
+	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
+}
+void Application::ProcessKeyPressed(sf::Event a_event)
+{
+	switch (a_event.key.code)
+	{
+	default: break;
+	case sf::Keyboard::Space:
+		// We're Boosting
+		break;
+	}
+}
+void Application::ProcessKeyReleased(sf::Event a_event)
+{
+	switch (a_event.key.code)
+	{
+	default: break;
+	case sf::Keyboard::Escape:
+		m_bRunning = false;
+		break;
+	case sf::Keyboard::Space:
+		// No longer boosting
+		break;
+	}
+}
+void Application::ProcessMousePressed(sf::Event a_event)
+{
+	switch (a_event.mouseButton.button)
+	{
+	default: break;
+	case sf::Mouse::Button::Left:
+		m_bRolling = true;
+		break;
+	}
+}
+void Application::ProcessMouseReleased(sf::Event a_event)
+{
+	switch (a_event.mouseButton.button)
+	{
+	default: break;
+	case sf::Mouse::Button::Left:
+		m_bRolling = false;
+		break;
+	}
+}
+
+#pragma endregion

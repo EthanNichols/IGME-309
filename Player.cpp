@@ -36,6 +36,5 @@ namespace Player {
 		Simplex::matrix4 lastMatrix = p_entityManager->GetModelMatrix("ship");// get the model matrix of the last added
 		lastMatrix *= glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(0.0f, 0.0f, speed)); //translate it
 		p_entityManager->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
-
 	}
 }

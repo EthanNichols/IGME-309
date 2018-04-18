@@ -11,7 +11,7 @@ namespace Generation {
 	void Init() {
 		g_entityManager = Simplex::MyEntityManager::GetInstance();
 	}
-
+	
 	///Create the chunks that will be used
 	void GenerateChunks() {
 
@@ -28,7 +28,7 @@ namespace Generation {
 			Simplex::matrix4 groundMatrix = Simplex::IDENTITY_M4;
 			groundMatrix[3][0] = -20;
 			groundMatrix[3][1] = -30;
-			groundMatrix[3][2] = -(g_entityManager->GetRigidBody()->GetHalfWidth().z * 2) * i;
+			groundMatrix[3][2] = -(g_entityManager->GetRigidBody()->GetHalfWidth().z * 2 - 1.0f) * i;
 			g_entityManager->SetModelMatrix(groundMatrix);
 		}
 	}
@@ -45,7 +45,7 @@ namespace Generation {
 
 			//Set the new position of the chunk if the player passed it
 			if (groundMatrix[3][2] - (g_entityManager->GetRigidBody(name)->GetHalfWidth().z * 2) > Player::GetPosition().z) {
-				groundMatrix[3][2] -= (g_entityManager->GetRigidBody(name)->GetHalfWidth().z * 2) * CHUNK_AMOUNT;
+				groundMatrix[3][2] -= (g_entityManager->GetRigidBody(name)->GetHalfWidth().z * 2 - 1.0f) * CHUNK_AMOUNT;
 				g_entityManager->SetModelMatrix(groundMatrix, name);
 			}
 		}
