@@ -1,6 +1,9 @@
 #include "Player.h"
 
 float speed = 0.1f;
+float boostingMultiplier = 2.5f;
+
+bool boosting = false;
 
 Simplex::MyEntityManager* p_entityManager;
 
@@ -29,12 +32,16 @@ namespace Player {
 		return Simplex::vector3(vec4Pos.x, vec4Pos.y, vec4Pos.z);
 	}
 
+	void SetBoosting(bool isBoosting) {
+		boosting = isBoosting;
+	}
+
 	///Update the position and dislay of the player
 	void Display() {
 
 		//Move the last entity added slowly to the right
 		Simplex::matrix4 lastMatrix = p_entityManager->GetModelMatrix("ship");// get the model matrix of the last added
-		lastMatrix *= glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(0.0f, 0.0f, speed)); //translate it
+		lastMatrix *= glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(0.0f, 0.0f, speed * (boosting ? boostingMultiplier : 1.0f))); //translate it
 		p_entityManager->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
 	}
 }

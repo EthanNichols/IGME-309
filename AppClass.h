@@ -14,6 +14,7 @@ Date: 2017/06
 
 #include "Generation.h"
 #include "Player.h"
+#include "UIBar.h"
 
 namespace Simplex
 {
@@ -21,8 +22,6 @@ namespace Simplex
 class Application
 {
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
-	vector3 m_v3Creeper; //position of the creeper
-	quaternion m_qCreeper; //orientation for the creeper
 		
 private:
 	String m_sProgrammer = "Team Meltdown"; //programmer
@@ -39,7 +38,6 @@ private:
 	bool m_bFocused = true; //is the window focused?
 
 	float m_fMovementSpeed = 0.1f; //how fast the camera will move
-
 	
 	bool m_bFPC = false;// First Person Camera flag
 	bool m_bArcBall = false;// ArcBall flag
@@ -118,7 +116,7 @@ private:
 	ARGUMENTS: String a_sWindowName = "GLFW" -> Window name
 	OUTPUT: ---
 	*/
-	void InitWindow(String a_sWindowName = "Application");
+	void InitWindow(String a_sWindowName = "MELTDOWN");
 	/*
 	USAGE: Initializes user specific variables, this is executed right after InitWindow,
 	the purpose of this member function is to initialize member variables specific for this project.
@@ -164,7 +162,7 @@ private:
 	ARGUMENTS: vector4 a_v4ClearColor = vector4(-1.0f) -> Color to clear the screen with
 	OUTPUT: ---
 	*/
-	void ClearScreen(vector4 a_v4ClearColor = vector4(-1.0f));
+	void ClearScreen(vector4 a_v4ClearColor = vector4(0.0f));
 	/*
 	USAGE: Will initialize the controllers generically
 	ARGUMENTS:
