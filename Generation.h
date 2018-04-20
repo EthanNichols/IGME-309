@@ -11,4 +11,7 @@ namespace Generation {
 
 	void GenerateChunks();
 	void Display();
+
+	void SpawnPillars(Simplex::vector3 centerPos);
+	void DestroyPillars();
 }
