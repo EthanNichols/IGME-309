@@ -18,7 +18,6 @@ void Application::InitVariables(void)
 	m_pEntityMngr = MyEntityManager::GetInstance();
 
 	//Create the player and chunks for the game
-	//UIBar::CreateBars();
 	Generation::GenerateChunks();
 	Player::CreatePlayer();
 }
@@ -62,7 +61,32 @@ void Application::Display(void)
 	//draw gui
 	DrawGUI();
 
-	//UIBar::Display();
+#pragma region Meltdown / Scoring
+
+	// Meltdown logic
+	if (meltdownMeter < 1.0f && !Player::GetBoosting()) {
+		meltdownMeter += meltdownMeterChargeRate;
+
+		if (meltdownMeter > 1.0f)
+			meltdownMeter = 1.0f;
+	} else if (Player::GetBoosting()) {
+		meltdownMeter -= boostDepleteRate;
+
+		if (meltdownMeter <= 0.0f) {
+			//Perform a MELTDOWN
+			meltdownMeter = 1.0f;
+			meltdownMultiplier += 1;
+			Player::SetSpeed(meltdownMultiplier);
+			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+		}
+	}
+
+	thisRunScore += Player::GetSpeed() * meltdownMultiplier;
+
+	if (thisRunScore > bestRunScore)
+		bestRunScore = thisRunScore;
+
+#pragma endregion
 
 	//end the current frame (internally swaps the front and back buffers)
 	m_pWindow->display();
@@ -76,6 +100,11 @@ void Application::Release(void)
 
 	//release GUI
 	ShutdownGUI();
+}
+
+void Application::ResetGame() {
+	lastRunScore = thisRunScore;
+	thisRunScore = 0;
 }
 
 #pragma region Ship Controls
@@ -121,10 +150,13 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	switch (a_event.key.code)
 	{
 	default: break;
+	//case sf::Keyboard::W:
 	case sf::Keyboard::Space:
 		// We're Boosting
-		Player::SetBoosting(true);
-		m_pCameraMngr->SetFOV(55.0f);
+		if (meltdownMeter > 0.9f) {
+			Player::SetBoosting(true);
+			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+		}
 		break;
 	}
 }
@@ -136,10 +168,13 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	case sf::Keyboard::Escape:
 		m_bRunning = false;
 		break;
+	//case sf::Keyboard::W:
 	case sf::Keyboard::Space:
 		// No longer boosting
 		Player::SetBoosting(false);
 		m_pCameraMngr->SetFOV(50.0f);
+		meltdownMultiplier = 1;
+		Player::SetSpeed(1);
 		break;
 	}
 }

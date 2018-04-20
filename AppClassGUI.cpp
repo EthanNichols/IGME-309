@@ -1,4 +1,4 @@
-#include "AppClass.h"
+﻿#include "AppClass.h"
 using namespace Simplex;
 ImGuiObject Application::gui;
 #define IM_ARRAYSIZE(_ARR)  ((int)(sizeof(_ARR)/sizeof(*_ARR)))
@@ -148,14 +148,46 @@ void Application::DrawGUI(void)
 		String sAbout = m_pSystem->GetAppName() + " - About";
 		ImGui::Begin(sAbout.c_str(), (bool*)0, window_flags);
 		{
-			ImGui::Text("Programmer: \n");
-			ImGui::TextColored(v4Color, m_sProgrammer.c_str());
-			ImGui::Text("FrameRate: %.2f [FPS] -> %.3f [ms/frame]\n",
-				ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
-			ImGui::Text("Control:\n");
-			ImGui::Text("            A/D: Strafe\n");
-			ImGui::Text("Left Click/Drag: Roll\n");
-			ImGui::Text("	       Space: Boost\n");
+			if (debugInformation) {
+				ImGui::Text("Programmer: \n");
+				ImGui::TextColored(v4Color, m_sProgrammer.c_str());
+				ImGui::Text("FrameRate: %.2f [FPS] -> %.3f [ms/frame]\n",
+					ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
+				ImGui::Text("Control:\n");
+				ImGui::Text("            A/D: Strafe\n");
+				ImGui::Text("Left Click/Drag: Roll\n");
+				ImGui::Text("	       Space: Boost\n");
+
+				ImGui::Separator();
+			}
+
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "MELTDOWN DRIVE");
+
+			// Construct the meltdown meter GUI
+			std::string meter = "";
+			int numToDraw = barLength * (meltdownMeter / 1.0f);
+			int numToNotDraw = barLength - numToDraw;
+			for (int i = 0; i < numToDraw; i++)
+				meter += "|";
+			for (int i = 0; i < numToNotDraw; i++)
+				meter += "_";
+
+			std::string percentage = std::to_string((int)((meltdownMeter / 1.0f) * 100));
+
+			ImGui::TextColored(ImVec4(1.0f, 0.69f, 0.0f, 1.0f), (std::to_string(meltdownMultiplier) + "x " + meter + " " + percentage + "%%   ").c_str());
+
+			ImGui::Separator();
+
+			// Scoring (DON'T LOOK)
+
+			ImGui::Text("Score");
+			ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), std::to_string(thisRunScore).c_str());
+
+			ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Last Run");
+			ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), std::to_string(lastRunScore).c_str());
+
+			ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Best Run");
+			ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), std::to_string(bestRunScore).c_str());
 		}
 		ImGui::End();
 	}

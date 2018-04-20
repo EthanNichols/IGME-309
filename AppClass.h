@@ -25,6 +25,18 @@ class Application
 		
 private:
 	String m_sProgrammer = "Team Meltdown"; //programmer
+	bool debugInformation = false;
+
+	// UI Stuff
+	float meltdownMeter = 0.0f;
+	float meltdownMeterChargeRate = 0.0025f;
+	float boostDepleteRate = 0.001f;
+	int meltdownMultiplier = 1;
+	int barLength = 20;
+
+	int thisRunScore = 0;
+	int lastRunScore = 0;
+	int bestRunScore = 0;
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -65,6 +77,8 @@ public:
 	vector3 m_v3LastMouse = vector3();
 
 	bool m_bRolling;
+
+	void ResetGame();
 
 #pragma region Constructor / Run / Destructor
 	/*
