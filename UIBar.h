@@ -5,12 +5,12 @@
 #include "MyEntity.h"
 #include "MyEntityManager.h"
 
-namespace Player {
-	void CreatePlayer();
+namespace UIBar {
 
-	void SetBoosting(bool isBoosting);
+	void CreateBars();
 
 	Simplex::vector3 GetPosition();
 
 	void Display();
 }
+

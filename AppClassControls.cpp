@@ -12,48 +12,7 @@ void Application::ProcessMouseMovement(sf::Event a_event)
 		m_v3Mouse += vector3(-8.0f, -32.0f, 0.0f);
 	gui.io.MousePos = ImVec2(m_v3Mouse.x, m_v3Mouse.y);
 }
-void Application::ProcessMousePressed(sf::Event a_event)
-{
-	switch (a_event.mouseButton.button)
-	{
-	default: break;
-	case sf::Mouse::Button::Left:
-		gui.m_bMousePressed[0] = true;
-		break;
-	case sf::Mouse::Button::Middle:
-		gui.m_bMousePressed[1] = true;
-		m_bArcBall = true;
-		break;
-	case sf::Mouse::Button::Right:
-		gui.m_bMousePressed[2] = true;
-		m_bFPC = true;
-		break;
-	}
 
-	for (int i = 0; i < 3; i++)
-		gui.io.MouseDown[i] = gui.m_bMousePressed[i];
-}
-void Application::ProcessMouseReleased(sf::Event a_event)
-{
-	switch (a_event.mouseButton.button)
-	{
-	default: break;
-	case sf::Mouse::Button::Left:
-		gui.m_bMousePressed[0] = false;
-		break;
-	case sf::Mouse::Button::Middle:
-		gui.m_bMousePressed[1] = false;
-		m_bArcBall = false;
-		break;
-	case sf::Mouse::Button::Right:
-		gui.m_bMousePressed[2] = false;
-		m_bFPC = false;
-		break;
-	}
-
-	for (int i = 0; i < 3; i++)
-		gui.io.MouseDown[i] = gui.m_bMousePressed[i];
-}
 void Application::ProcessMouseScroll(sf::Event a_event)
 {
 	gui.io.MouseWheel = a_event.mouseWheelScroll.delta;
@@ -65,88 +24,7 @@ void Application::ProcessMouseScroll(sf::Event a_event)
 		fSpeed *= 2.0f;
 	m_pCameraMngr->MoveForward(-fSpeed);
 }
-//Keyboard
-void Application::ProcessKeyPressed(sf::Event a_event)
-{
-	switch (a_event.key.code)
-	{
-	default: break;
-	case sf::Keyboard::Space:
-		m_sound.play();
-		break;
-	case sf::Keyboard::LShift:
-	case sf::Keyboard::RShift:
-		m_bModifier = true;
-		break;
-	}
-	
-	//gui
-	gui.io.KeysDown[a_event.key.code] = true;
-	gui.io.KeyCtrl = a_event.key.control;
-	gui.io.KeyShift = a_event.key.shift;
-}
-void Application::ProcessKeyReleased(sf::Event a_event)
-{
-	static bool bFPSControl = false;
 
-	switch (a_event.key.code)
-	{
-	default: break;
-	case sf::Keyboard::Escape:
-		m_bRunning = false;
-		break;
-	case sf::Keyboard::F1:
-		m_pCameraMngr->SetCameraMode(CAM_PERSP);
-		break;
-	case sf::Keyboard::F2:
-		m_pCameraMngr->SetCameraMode(CAM_ORTHO_Z);
-		break;
-	case sf::Keyboard::F3:
-		m_pCameraMngr->SetCameraMode(CAM_ORTHO_Y);
-		break;
-	case sf::Keyboard::F4:
-		m_pCameraMngr->SetCameraMode(CAM_ORTHO_X);
-		break;
-	case sf::Keyboard::F:
-		bFPSControl = !bFPSControl;
-		m_pCameraMngr->SetFPS(bFPSControl);
-		break;
-	case sf::Keyboard::Add:
-		++m_uActCont;
-		m_uActCont %= 8;
-		if (m_uControllerCount > 0)
-		{
-			while (m_pController[m_uActCont]->uModel == SimplexController_NONE)
-			{
-				++m_uActCont;
-				m_uActCont %= 8;
-			}
-		}
-		break;
-	case sf::Keyboard::Subtract:
-		--m_uActCont;
-		if (m_uActCont > 7)
-			m_uActCont = 7;
-		if (m_uControllerCount > 0)
-		{
-			while (m_pController[m_uActCont]->uModel == SimplexController_NONE)
-			{
-				--m_uActCont;
-				if (m_uActCont > 7)
-					m_uActCont = 7;
-			}
-		}
-		break;
-	case sf::Keyboard::LShift:
-	case sf::Keyboard::RShift:
-		m_bModifier = false;
-	}
-
-	//gui
-	gui.io.KeysDown[a_event.key.code] = false;
-	gui.io.KeyCtrl = a_event.key.control;
-	gui.io.KeyShift = a_event.key.shift;
-}
 //Joystick
 void Application::ProcessJoystickConnected(uint nController)
 {
@@ -392,43 +270,7 @@ void Application::CameraRotation(float a_fSpeed)
 	m_pCameraMngr->ChangePitch(-fAngleX * 3.0f);
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 }
-//Keyboard
-void Application::ProcessKeyboard(void)
-{
-	if (!m_bFocused)
-		return;
-	/*
-	This is used for things that are continuously happening,
-	for discreet on/off use ProcessKeyboardPressed/Released
-	*/
-#pragma region Camera Position
-	bool bMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
-	float fMultiplier = 10.0f;
-
-	if (bMultiplier)
-		fMultiplier = 5.0f;
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-		m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-		m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-		m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
-#pragma endregion
-}
 //Joystick
 void Application::ProcessJoystick(void)
 {
