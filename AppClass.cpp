@@ -161,6 +161,14 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	case sf::Keyboard::BackSlash:
 		if (m_bDebug == true) { m_bDebug = false; }
 		else if (m_bDebug == false) { m_bDebug = true; }
+		break;
+	case sf::Keyboard::N:
+		if (m_bDebug) {
+			vector3 shipPos = Player::GetPosition();
+			vector3 cameraPos = shipPos + vector3(0, 10, 25);
+			m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+		}
+		break;
 	}
 }
 void Application::ProcessKeyReleased(sf::Event a_event)
