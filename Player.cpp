@@ -27,7 +27,7 @@ namespace Player {
 
 	///Return the position of the player
 	Simplex::vector3 GetPosition() {
-		Simplex::vector4 vec4Pos = p_entityManager->GetModelMatrix() * Simplex::vector4(0, 0, 0, 1);
+		Simplex::vector4 vec4Pos = p_entityManager->GetModelMatrix("ship") * Simplex::vector4(0, 0, 0, 1);
 
 		return Simplex::vector3(vec4Pos.x, vec4Pos.y, vec4Pos.z);
 	}
