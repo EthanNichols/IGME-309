@@ -9,6 +9,13 @@ bool boosting = false;
 
 Simplex::MyEntityManager* p_entityManager;
 
+Simplex::Collider playerCollider({
+    glm::vec2(+1.0f, +1.0f),
+    glm::vec2(+1.0f, -1.0f),
+    glm::vec2(-1.0f, -1.0f),
+    glm::vec2(-1.0f, +1.0f),
+}, 3.0f);
+
 namespace Player {
 
 	///Initialize all of the needed variables for the player
@@ -23,7 +30,7 @@ namespace Player {
 		if (p_entityManager == nullptr) Init();
 
 		//Create the player
-		p_entityManager->AddEntity("models\\model_ship.obj", "ship");
+		p_entityManager->AddEntity("models\\model_ship.obj", playerCollider, "ship");
 		p_entityManager->SetModelMatrix(glm::rotate(Simplex::IDENTITY_M4, 180.0f, 0.0f, 1.0f, 0.0f));
 	}
 
