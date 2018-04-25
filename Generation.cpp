@@ -10,6 +10,8 @@ int pillarCount = 0;
 Simplex::vector3 chunkSize;
 float zOffset = .7;
 
+float scaleRange = 2.0f;
+
 Simplex::MyEntityManager* g_entityManager;
 
 namespace Generation {
@@ -107,10 +109,12 @@ namespace Generation {
 			g_entityManager->AddEntity(pillarFiles[rand() % PILLAR_AMOUNT], "Pillar_" + pillarCount);
 
 			//Randomly set an offset for the pillar
-			Simplex::vector3 offset = Simplex::vector3((rand() % (int)(chunkSize.x * 2)) - chunkSize.x, 7, (rand() % (int)(chunkSize.z * 2)) - chunkSize.z);
+			Simplex::vector3 offset = Simplex::vector3((rand() % (int)(chunkSize.x * 1.8f)) - chunkSize.x, 5, (rand() % (int)(chunkSize.z * 2)) - chunkSize.z);
+
+			float thisScale = 2 + rand() % (int)scaleRange;
 
 			//Calculate the position of the pillar relative to the chunk position
-			Simplex::matrix4 pos = glm::translate(Simplex::IDENTITY_M4, centerPos + offset);
+			Simplex::matrix4 pos = glm::translate(Simplex::IDENTITY_M4, centerPos + offset) * glm::scale(Simplex::IDENTITY_M4, glm::vec3(thisScale));
 
 			//Set the offsetted local position to the chunk
 			g_entityManager->SetModelMatrix(pos);

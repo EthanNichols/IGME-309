@@ -29,14 +29,16 @@ private:
 
 	// UI Stuff
 	float meltdownMeter = 0.0f;
-	float meltdownMeterChargeRate = 0.0025f;
-	float boostDepleteRate = 0.001f;
+	float meltdownMeterChargeRate = 0.005f;
+	float boostDepleteRate = 0.0015f;
 	int meltdownMultiplier = 1;
 	int barLength = 20;
 
 	int thisRunScore = 0;
 	int lastRunScore = 0;
 	int bestRunScore = 0;
+
+	float health = 1.0f;
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -50,6 +52,7 @@ private:
 	bool m_bFocused = true; //is the window focused?
 
 	float m_fMovementSpeed = 0.1f; //how fast the camera will move
+	float strafeModifier = 0.01f;
 	
 	bool m_bFPC = false;// First Person Camera flag
 	bool m_bArcBall = false;// ArcBall flag

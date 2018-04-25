@@ -38,7 +38,7 @@ void Application::Display(void)
 	ClearScreen();
 
 	// draw a skybox
-	m_pMeshMngr->AddSkyboxToRenderList();
+	//m_pMeshMngr->AddSkyboxToRenderList();
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
@@ -103,6 +103,12 @@ void Application::Release(void)
 }
 
 void Application::ResetGame() {
+	health = 1.0f;
+	meltdownMultiplier = 1;
+
+	if (thisRunScore < bestRunScore)
+		bestRunScore = thisRunScore;
+
 	lastRunScore = thisRunScore;
 	thisRunScore = 0;
 }
@@ -125,14 +131,14 @@ void Application::ProcessKeyboard(void)
 
 	// Strafe left
 	if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
-		shipDistFromCenter -= strafeSpeed;
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-(strafeSpeed + (meltdownMultiplier * strafeModifier)), 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter -= (strafeSpeed + (meltdownMultiplier * strafeModifier));
 	}
 
 	// Strafe right
 	if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
-		shipDistFromCenter += strafeSpeed;
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed + (meltdownMultiplier * strafeModifier), 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter += strafeSpeed + (meltdownMultiplier * strafeModifier);
 	}
 
 	// Roll
