@@ -168,6 +168,14 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 			m_pCameraMngr->SetFOV(80.0f + meltdownMultiplier);
 		}
 		break;
+
+	//Increase/Decrease the amount of chunks visible
+	case sf::Keyboard::I:
+		Generation::ChangeChunkAmount(1);
+		break;
+	case sf::Keyboard::O:
+		Generation::ChangeChunkAmount(-1);
+		break;
 	}
 }
 void Application::ProcessKeyReleased(sf::Event a_event)
