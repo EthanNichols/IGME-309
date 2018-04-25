@@ -33,6 +33,20 @@ void Application::Update(void)
 
 	CameraRotation();
 
+	// Set the ship's velocity (check for/resolve collisions)
+	Player::SetVelocity();
+
+	//Update the camera position
+	if (!m_bDebug) {
+		//Get the ship position and set the camera offset relative to the ship
+		vector3 shipPos = Player::GetPosition();
+
+		//The specfic camera offset from the model is (15, 0, 60);
+
+		vector3 cameraPos = shipPos + vector3(0, 10, 25);
+		m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+	}
+
 	//Add objects to render list
 	if (!m_bDebug) {
 		m_pEntityMngr->AddEntityToRenderList(-1, false);
@@ -41,7 +55,7 @@ void Application::Update(void)
 		m_pEntityMngr->AddEntityToRenderList(-1, true);
 	}
 
-	if (health <= 0.0f)
+	if (Player::GetHealth() <= 0.0f)
 		ResetGame();
 }
 void Application::Display(void)
@@ -55,20 +69,10 @@ void Application::Display(void)
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
-	//Get the ship position and set the camera offset relative to the ship
-	vector3 shipPos = Player::GetPosition();
-
-	//The specfic camera offset from the model is (15, 0, 60);
-
-	vector3 cameraPos = shipPos + vector3(0, 10, 25);
 
 	//Update the display of the player and the map
 	Player::Display();
 
-	//Update the camera position
-	if (!m_bDebug) {
-		m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
-	}
 	Generation::Display();
 
 	//clear the render list
@@ -118,7 +122,7 @@ void Application::Release(void)
 }
 
 void Application::ResetGame() {
-	health = 1.0f;
+	Player::SetHealth(1.0f);
 	meltdownMultiplier = 1;
 
 	if (thisRunScore < bestRunScore)
@@ -153,45 +157,42 @@ void Application::ProcessKeyboard(void)
 		if (bMultiplier)
 			fMultiplier = 5.0f;
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 			m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 			m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 			m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageUp))
 			m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::PageDown))
 			m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
 	}
-	else {
+	// Strafe left
+	if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-(strafeSpeed + (meltdownMultiplier * strafeModifier)), 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter -= (strafeSpeed + (meltdownMultiplier * strafeModifier));
+	}
 
-		// Strafe left
-		if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-			lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-(strafeSpeed + (meltdownMultiplier * strafeModifier)), 0.0f, 0.0f)) * lastMatrix; //translate it
-			shipDistFromCenter -= (strafeSpeed + (meltdownMultiplier * strafeModifier));
-		}
+	// Strafe right
+	if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed + (meltdownMultiplier * strafeModifier), 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter += strafeSpeed + (meltdownMultiplier * strafeModifier);
+	}
 
-		// Strafe right
-		if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-			lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed + (meltdownMultiplier * strafeModifier), 0.0f, 0.0f)) * lastMatrix; //translate it
-			shipDistFromCenter += strafeSpeed + (meltdownMultiplier * strafeModifier);
-		}
+	// Roll
+	float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
 
-		// Roll
-		float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
-
-		if (m_bRolling) {
-			rotation -= deltaMouseX * rollSpeed;
-			lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
-		}
+	if (m_bRolling) {
+		rotation -= deltaMouseX * rollSpeed;
+		lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
 	}
 	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
 }

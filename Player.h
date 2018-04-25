@@ -16,7 +16,13 @@ namespace Player {
 
 	float GetSpeed();
 
+	float GetHealth();
+
 	Simplex::vector3 GetPosition();
+
+	void SetVelocity();
+
+	void SetHealth(float h);
 
 	void Display();
 }
