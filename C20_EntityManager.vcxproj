@@ -14,7 +14,7 @@
     <ProjectGuid>{84EB6872-8225-4E77-8F66-C184C801BE68}</ProjectGuid>
     <RootNamespace>C20_EntityManager</RootNamespace>
     <ProjectName>Meltdown</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -69,7 +69,9 @@
       <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying Shaders...</Message>
@@ -123,7 +125,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Generation.h" />
     <ClInclude Include="Main.h" />
-    <ClInclude Include="MyCollider.h" />
     <ClInclude Include="MyEntity.h" />
     <ClInclude Include="MyEntityManager.h" />
     <ClInclude Include="Player.h" />

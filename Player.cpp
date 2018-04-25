@@ -1,6 +1,6 @@
 #include "Player.h"
 
-float baseSpeed = 0.1f;
+float baseSpeed = 0.2125f;
 float boostingMultiplier = 2.5f;
 
 float speed = 1.0f;

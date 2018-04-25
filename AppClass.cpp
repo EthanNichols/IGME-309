@@ -11,6 +11,7 @@ void Application::InitVariables(void)
 		AXIS_Y);					//Up
 
 	m_pCameraMngr->SetNearFarPlanes(0.1f, 2000.0f);
+	m_pCameraMngr->SetFOV(80.0f);
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
@@ -20,6 +21,7 @@ void Application::InitVariables(void)
 	//Create the player and chunks for the game
 	Generation::GenerateChunks();
 	Player::CreatePlayer();
+	m_bDebug = false;
 }
 void Application::Update(void)
 {
@@ -29,8 +31,18 @@ void Application::Update(void)
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 
+	CameraRotation();
+
 	//Add objects to render list
-	m_pEntityMngr->AddEntityToRenderList(-1, true);
+	if (!m_bDebug) {
+		m_pEntityMngr->AddEntityToRenderList(-1, false);
+	}
+	else {
+		m_pEntityMngr->AddEntityToRenderList(-1, true);
+	}
+
+	if (health <= 0.0f)
+		ResetGame();
 }
 void Application::Display(void)
 {
@@ -38,7 +50,7 @@ void Application::Display(void)
 	ClearScreen();
 
 	// draw a skybox
-	m_pMeshMngr->AddSkyboxToRenderList();
+	//m_pMeshMngr->AddSkyboxToRenderList();
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
@@ -47,13 +59,16 @@ void Application::Display(void)
 	vector3 shipPos = Player::GetPosition();
 
 	//The specfic camera offset from the model is (15, 0, 60);
+
 	vector3 cameraPos = shipPos + vector3(0, 10, 25);
 
 	//Update the display of the player and the map
 	Player::Display();
 
 	//Update the camera position
-	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+	if (!m_bDebug) {
+		m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+	}
 	Generation::Display();
 
 	//clear the render list
@@ -77,7 +92,7 @@ void Application::Display(void)
 			meltdownMeter = 1.0f;
 			meltdownMultiplier += 1;
 			Player::SetSpeed(meltdownMultiplier);
-			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+			m_pCameraMngr->SetFOV(80.0f + meltdownMultiplier);
 		}
 	}
 
@@ -103,6 +118,12 @@ void Application::Release(void)
 }
 
 void Application::ResetGame() {
+	health = 1.0f;
+	meltdownMultiplier = 1;
+
+	if (thisRunScore < bestRunScore)
+		bestRunScore = thisRunScore;
+
 	lastRunScore = thisRunScore;
 	thisRunScore = 0;
 }
@@ -123,26 +144,55 @@ void Application::ProcessKeyboard(void)
 
 	Simplex::matrix4 lastMatrix = m_pEntityMngr->GetModelMatrix("ship");
 
-	// Strafe left
-	if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
-		shipDistFromCenter -= strafeSpeed;
-	}
+	if (m_bDebug) {
+		bool bMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
-	// Strafe right
-	if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
-		shipDistFromCenter += strafeSpeed;
-	}
+		float fMultiplier = 1.0f;
 
-	// Roll
-	float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
-	
-	if (m_bRolling) {
-		rotation -= deltaMouseX * rollSpeed;
-		lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
+		if (bMultiplier)
+			fMultiplier = 5.0f;
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			m_pCameraMngr->MoveForward(m_fMovementSpeed * fMultiplier);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			m_pCameraMngr->MoveForward(-m_fMovementSpeed * fMultiplier);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			m_pCameraMngr->MoveSideways(-m_fMovementSpeed * fMultiplier);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			m_pCameraMngr->MoveSideways(m_fMovementSpeed * fMultiplier);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+			m_pCameraMngr->MoveVertical(-m_fMovementSpeed * fMultiplier);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+			m_pCameraMngr->MoveVertical(m_fMovementSpeed * fMultiplier);
 	}
-	
+	else {
+
+		// Strafe left
+		if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-(strafeSpeed + (meltdownMultiplier * strafeModifier)), 0.0f, 0.0f)) * lastMatrix; //translate it
+			shipDistFromCenter -= (strafeSpeed + (meltdownMultiplier * strafeModifier));
+		}
+
+		// Strafe right
+		if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed + (meltdownMultiplier * strafeModifier), 0.0f, 0.0f)) * lastMatrix; //translate it
+			shipDistFromCenter += strafeSpeed + (meltdownMultiplier * strafeModifier);
+		}
+
+		// Roll
+		float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
+
+		if (m_bRolling) {
+			rotation -= deltaMouseX * rollSpeed;
+			lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
+		}
+	}
 	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
 }
 void Application::ProcessKeyPressed(sf::Event a_event)
@@ -155,7 +205,18 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		// We're Boosting
 		if (meltdownMeter > 0.9f) {
 			Player::SetBoosting(true);
-			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+			m_pCameraMngr->SetFOV(80.0f + meltdownMultiplier);
+		}
+		break;
+	case sf::Keyboard::BackSlash:
+		if (m_bDebug == true) { m_bDebug = false; }
+		else if (m_bDebug == false) { m_bDebug = true; }
+		break;
+	case sf::Keyboard::N:
+		if (m_bDebug) {
+			vector3 shipPos = Player::GetPosition();
+			vector3 cameraPos = shipPos + vector3(0, 10, 25);
+			m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
 		}
 		break;
 	}
@@ -172,7 +233,7 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	case sf::Keyboard::Space:
 		// No longer boosting
 		Player::SetBoosting(false);
-		m_pCameraMngr->SetFOV(50.0f);
+		m_pCameraMngr->SetFOV(80.0f);
 		meltdownMultiplier = 1;
 		Player::SetSpeed(1);
 		break;
@@ -180,6 +241,26 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 }
 void Application::ProcessMousePressed(sf::Event a_event)
 {
+	if (m_bDebug) {
+		switch (a_event.mouseButton.button)
+		{
+		default: break;
+		case sf::Mouse::Button::Left:
+			gui.m_bMousePressed[0] = true;
+			break;
+		case sf::Mouse::Button::Middle:
+			gui.m_bMousePressed[1] = true;
+			m_bArcBall = true;
+			break;
+		case sf::Mouse::Button::Right:
+			gui.m_bMousePressed[2] = true;
+			m_bFPC = true;
+			break;
+		}
+
+		for (int i = 0; i < 3; i++)
+			gui.io.MouseDown[i] = gui.m_bMousePressed[i];
+	}
 	switch (a_event.mouseButton.button)
 	{
 	default: break;
@@ -190,6 +271,26 @@ void Application::ProcessMousePressed(sf::Event a_event)
 }
 void Application::ProcessMouseReleased(sf::Event a_event)
 {
+	if (m_bDebug) {
+		switch (a_event.mouseButton.button)
+		{
+		default: break;
+		case sf::Mouse::Button::Left:
+			gui.m_bMousePressed[0] = false;
+			break;
+		case sf::Mouse::Button::Middle:
+			gui.m_bMousePressed[1] = false;
+			m_bArcBall = false;
+			break;
+		case sf::Mouse::Button::Right:
+			gui.m_bMousePressed[2] = false;
+			m_bFPC = false;
+			break;
+		}
+
+		for (int i = 0; i < 3; i++)
+			gui.io.MouseDown[i] = gui.m_bMousePressed[i];
+	}
 	switch (a_event.mouseButton.button)
 	{
 	default: break;

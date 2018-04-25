@@ -161,8 +161,6 @@ void Application::DrawGUI(void)
 				ImGui::Separator();
 			}
 
-			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "MELTDOWN DRIVE");
-
 			// Construct the meltdown meter GUI
 			std::string meter = "";
 			int numToDraw = barLength * (meltdownMeter / 1.0f);
@@ -172,9 +170,24 @@ void Application::DrawGUI(void)
 			for (int i = 0; i < numToNotDraw; i++)
 				meter += "_";
 
-			std::string percentage = std::to_string((int)((meltdownMeter / 1.0f) * 100));
+			// Construct the hull bar UI
+			std::string healthBar = "";
+			int numHealthToDraw = (health / 1.0f) * barLength;
+			int numHealthToNotDraw = barLength - numHealthToDraw;
+			for (int i = 0; i < numHealthToDraw; i++)
+				healthBar += "|";
+			for (int i = 0; i < numHealthToNotDraw; i++)
+				healthBar += "_";
 
+			// Display the meltdown bar
+			ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "MELTDOWN DRIVE");
+			std::string percentage = std::to_string((int)((meltdownMeter / 1.0f) * 100));
 			ImGui::TextColored(ImVec4(1.0f, 0.69f, 0.0f, 1.0f), (std::to_string(meltdownMultiplier) + "x " + meter + " " + percentage + "%%   ").c_str());
+
+			// Display the health bar
+			std::string percentageHealth = std::to_string((int)((health / 1.0f) * 100));
+			ImGui::TextColored(ImVec4(1.0f, 0.85f, 0.0f, 1.0f), "HULL");
+			ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), (healthBar + " " + percentageHealth + "%%   ").c_str());
 
 			ImGui::Separator();
 
