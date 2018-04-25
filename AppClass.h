@@ -80,6 +80,7 @@ public:
 	vector3 m_v3LastMouse = vector3();
 
 	bool m_bRolling;
+	bool m_bDebug;
 
 	void ResetGame();
 
