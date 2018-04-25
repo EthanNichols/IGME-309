@@ -69,7 +69,9 @@
       <AdditionalDependencies>glu32.lib;glew32.lib;opengl32.lib;basicx_d.lib;simplex_d.lib;sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y</Command>
+      <Command>mkdir "$(SolutionDir)_Binary"
+copy "$(OutDir)$(TargetName)$(TargetExt)" "$(SolutionDir)_Binary"
+copy "$(SolutionDir)include\GL\bin\*.*" "$(SolutionDir)_Binary"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying Shaders...</Message>
@@ -111,7 +113,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClCompile Include="MyEntity.cpp" />
     <ClCompile Include="MyEntityManager.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="UIBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\imgui\imconfig.h" />
@@ -127,7 +128,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="MyEntity.h" />
     <ClInclude Include="MyEntityManager.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="UIBar.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\res\BTO.rc" />

@@ -10,6 +10,12 @@ namespace Player {
 
 	void SetBoosting(bool isBoosting);
 
+	bool GetBoosting();
+
+	void SetSpeed(float newSpeed);
+
+	float GetSpeed();
+
 	Simplex::vector3 GetPosition();
 
 	void Display();
