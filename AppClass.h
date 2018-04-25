@@ -38,8 +38,6 @@ private:
 	int lastRunScore = 0;
 	int bestRunScore = 0;
 
-	float health = 1.0f;
-
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
 	bool m_bGUI_Console = true; //show Credits GUI window?

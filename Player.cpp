@@ -1,7 +1,13 @@
 #include "Player.h"
 
+static float health = 1.0f;
+
+static Simplex::vector3 velocity;
+
 float baseSpeed = 0.2125f;
 float boostingMultiplier = 2.5f;
+
+float hullDurability = 0.1f;
 
 float speed = 1.0f;
 
@@ -34,13 +40,32 @@ namespace Player {
 		return Simplex::vector3(vec4Pos.x, vec4Pos.y, vec4Pos.z);
 	}
 
+	void SetVelocity() {
+
+		// Check for a collision
+
+		//If there is a collision...
+		    // Give the ship an x/z velocity so it moves away from the collision center
+		    // Alter the ship's health accordingly
+				// health -= (GetSpeed() * hullDurability);
+
+		// Otherwise...
+		velocity = Simplex::vector3(0.0f, 0.0f, GetSpeed());
+	}
+
+	void SetHealth(float h) {
+		health = h;
+	}
+
 	void SetBoosting(bool isBoosting) {
 		boosting = isBoosting;
 	}
 
 	void SetSpeed(float newSpeed) { speed = newSpeed; }
 
-	float GetSpeed() { return speed * (boosting ? boostingMultiplier : 1.0f); }
+	float GetSpeed() { return baseSpeed * speed * (boosting ? boostingMultiplier : 1.0f); }
+
+	float GetHealth() { return health; }
 
 	bool GetBoosting() { return boosting; }
 
@@ -49,7 +74,7 @@ namespace Player {
 
 		//Move the last entity added slowly to the right
 		Simplex::matrix4 lastMatrix = p_entityManager->GetModelMatrix("ship");// get the model matrix of the last added
-		lastMatrix *= glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(0.0f, 0.0f, baseSpeed * speed * (boosting ? boostingMultiplier : 1.0f))); //translate it
+		lastMatrix *= glm::translate(Simplex::IDENTITY_M4, velocity); //translate it
 		p_entityManager->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
 	}
 }

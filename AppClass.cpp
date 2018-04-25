@@ -33,6 +33,9 @@ void Application::Update(void)
 
 	CameraRotation();
 
+	// Set the ship's velocity (check for/resolve collisions)
+	Player::SetVelocity();
+
 	//Update the camera position
 	if (!m_bDebug) {
 		//Get the ship position and set the camera offset relative to the ship
@@ -52,7 +55,7 @@ void Application::Update(void)
 		m_pEntityMngr->AddEntityToRenderList(-1, true);
 	}
 
-	if (health <= 0.0f)
+	if (Player::GetHealth() <= 0.0f)
 		ResetGame();
 }
 void Application::Display(void)
@@ -119,7 +122,7 @@ void Application::Release(void)
 }
 
 void Application::ResetGame() {
-	health = 1.0f;
+	Player::SetHealth(1.0f);
 	meltdownMultiplier = 1;
 
 	if (thisRunScore < bestRunScore)
