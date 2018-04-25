@@ -9,7 +9,7 @@ const char* CHUNK_NAME = "ground_";
 const char* PILLAR_NAME = "pillar_";
 
 //The random amount of pillars that can spawn and the clamped max
-float PILLAR_AMOUNT = 1;
+float PILLAR_AMOUNT = 50;
 int MAX_PILLARS = 5;
 
 //Paths to the siz different pillar models
@@ -161,7 +161,7 @@ namespace Generation {
 	}
 
 	void ChangeMaxPillars(int amount) {
-		MAX_PILLARS += amount;
+		MAX_PILLARS = amount;
 
 		if (MAX_PILLARS <= 1) {
 			MAX_PILLARS = 1;
@@ -173,7 +173,6 @@ namespace Generation {
 
 		//Loop through all of the chunks
 		for (int i = 0; i < CHUNK_AMOUNT; i++) {
-
 			//Get the entitie's matrix
 			Simplex::String name = CHUNK_NAME;
 			name += std::to_string(i);
