@@ -45,17 +45,17 @@ public:
 
     void AddToRenderList(void) {
         MeshManager *meshMgr = MeshManager::GetInstance( );
-        std::vector<glm::vec3> tpoints;
-        tpoints.reserve(_points.size( ));
-        for (auto &p : _points) {
-            tpoints.emplace_back(glm::vec4(p.x, p.y, 0, 1) * _transform);
+        glm::vec3 offset(0, 0, _depth);
+        for (unsigned i = 0; i < _points.size( ); ++i) {
+            unsigned n = (i + 1) % _points.size( );
+            meshMgr->AddWireSphereToRenderList(glm::scale(glm::translate(_transform, glm::vec3(_points[i], 0)), glm::vec3(0.125f)), C_MAGENTA);
+            meshMgr->AddWireSphereToRenderList(glm::scale(glm::translate(_transform, glm::vec3(_points[i], 0) + offset), glm::vec3(0.125f)), C_MAGENTA);
+            //meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i], tpoints[n], Simplex::C_BLACK, Simplex::C_RED);
+            //meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i], tpoints[i] + offset, Simplex::C_BLACK, Simplex::C_RED);
+            //meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i] + offset, tpoints[n] + offset, Simplex::C_BLACK, Simplex::C_RED);
         }
-        for (unsigned i = 0; i < tpoints.size( ); ++i) {
-            unsigned n = (i + 1) % tpoints.size( );
-            glm::vec3 offset(0, 0, _depth);
-            meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i], tpoints[n], Simplex::C_RED, Simplex::C_RED);
-            meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i], tpoints[i] + offset, Simplex::C_RED, Simplex::C_RED);
-            meshMgr->AddLineToRenderList(Simplex::IDENTITY_M4, tpoints[i] + offset, tpoints[n] + offset, Simplex::C_RED, Simplex::C_RED);
+        for (const auto &n : _normals) {
+            meshMgr->AddWireSphereToRenderList(glm::scale(glm::translate(_transform, glm::vec3(n, 0)), glm::vec3(0.125f)), C_GREEN_LIME);
         }
     }
 
@@ -76,6 +76,7 @@ public:
         // project onto each of our normals...
         // (there's a better way to do this, but I can't be arsed)
         for (auto &axis : _normals) {
+            // get the bounds formed by us on the normal
             for (auto &point : tpoints) {
                 float proj = glm::dot(axis, point);
                 if (proj < tmin) tmin = proj;
@@ -108,6 +109,7 @@ public:
                 return false;
             }
         }
+        return true;
     }
 
     ~Collider( ) = default;

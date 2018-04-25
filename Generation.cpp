@@ -7,12 +7,12 @@ const char* CHUNK_NAME = "ground_";
 
 const int PILLAR_AMOUNT = 6;
 char* pillarFiles[PILLAR_AMOUNT] = {
-    "models\\model_pillar_0.obj"
-    "models\\model_pillar_1.obj"
-    "models\\model_pillar_2.obj"
-    "models\\model_pillar_3.obj"
-    "models\\model_pillar_4.obj"
-    "models\\model_pillar_5.obj"
+    "models\\model_pillar_0.obj",
+    "models\\model_pillar_1.obj",
+    "models\\model_pillar_2.obj",
+    "models\\model_pillar_3.obj",
+    "models\\model_pillar_4.obj",
+    "models\\model_pillar_5.obj",
 };
 static Simplex::Collider pillarColliders[PILLAR_AMOUNT] = {
     Simplex::Collider({

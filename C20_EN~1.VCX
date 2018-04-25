@@ -14,7 +14,7 @@
     <ProjectGuid>{84EB6872-8225-4E77-8F66-C184C801BE68}</ProjectGuid>
     <RootNamespace>C20_EntityManager</RootNamespace>
     <ProjectName>Meltdown</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -123,6 +123,7 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Generation.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="MyCollider.h" />
     <ClInclude Include="MyEntity.h" />
     <ClInclude Include="MyEntityManager.h" />
     <ClInclude Include="Player.h" />

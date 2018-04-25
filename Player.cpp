@@ -10,10 +10,12 @@ bool boosting = false;
 Simplex::MyEntityManager* p_entityManager;
 
 Simplex::Collider playerCollider({
-    glm::vec2(+1.0f, +1.0f),
-    glm::vec2(+1.0f, -1.0f),
-    glm::vec2(-1.0f, -1.0f),
-    glm::vec2(-1.0f, +1.0f),
+    glm::vec2(-2.5f, 1.0f),
+    glm::vec2(0, 1.5f),
+    glm::vec2(2.5f, 1.0f),
+    glm::vec2(2.5f, -1.0f),
+    glm::vec2(0, -1.5f),
+    glm::vec2(-2.5f, -1.0f)
 }, 3.0f);
 
 namespace Player {
