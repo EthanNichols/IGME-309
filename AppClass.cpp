@@ -11,6 +11,7 @@ void Application::InitVariables(void)
 		AXIS_Y);					//Up
 
 	m_pCameraMngr->SetNearFarPlanes(0.1f, 2000.0f);
+	m_pCameraMngr->SetFOV(80.0f);
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
@@ -31,6 +32,9 @@ void Application::Update(void)
 
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);
+
+	if (health <= 0.0f)
+		ResetGame();
 }
 void Application::Display(void)
 {
@@ -77,7 +81,7 @@ void Application::Display(void)
 			meltdownMeter = 1.0f;
 			meltdownMultiplier += 1;
 			Player::SetSpeed(meltdownMultiplier);
-			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+			m_pCameraMngr->SetFOV(80.0f + meltdownMultiplier);
 		}
 	}
 
@@ -161,7 +165,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		// We're Boosting
 		if (meltdownMeter > 0.9f) {
 			Player::SetBoosting(true);
-			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+			m_pCameraMngr->SetFOV(80.0f + meltdownMultiplier);
 		}
 		break;
 	}
@@ -178,7 +182,7 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	case sf::Keyboard::Space:
 		// No longer boosting
 		Player::SetBoosting(false);
-		m_pCameraMngr->SetFOV(50.0f);
+		m_pCameraMngr->SetFOV(80.0f);
 		meltdownMultiplier = 1;
 		Player::SetSpeed(1);
 		break;
