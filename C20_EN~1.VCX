@@ -123,7 +123,6 @@ xcopy "$(SolutionDir)include\Simplex\Shaders" "$(SolutionDir)_Binary\Shaders" /y
     <ClInclude Include="Definitions.h" />
     <ClInclude Include="Generation.h" />
     <ClInclude Include="Main.h" />
-    <ClInclude Include="MyCollider.h" />
     <ClInclude Include="MyEntity.h" />
     <ClInclude Include="MyEntityManager.h" />
     <ClInclude Include="Player.h" />

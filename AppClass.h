@@ -12,17 +12,31 @@ Date: 2017/06
 
 #include "MyEntityManager.h"
 
+#include "Generation.h"
+#include "Player.h"
+#include "UIBar.h"
+
 namespace Simplex
 {
 	//Adding Application to the Simplex namespace
 class Application
 {
 	MyEntityManager* m_pEntityMngr = nullptr; //Entity Manager
-	vector3 m_v3Creeper; //position of the creeper
-	quaternion m_qCreeper; //orientation for the creeper
 		
 private:
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //programmer
+	String m_sProgrammer = "Team Meltdown"; //programmer
+	bool debugInformation = false;
+
+	// UI Stuff
+	float meltdownMeter = 0.0f;
+	float meltdownMeterChargeRate = 0.0025f;
+	float boostDepleteRate = 0.001f;
+	int meltdownMultiplier = 1;
+	int barLength = 20;
+
+	int thisRunScore = 0;
+	int lastRunScore = 0;
+	int bestRunScore = 0;
 
 	static ImGuiObject gui; //GUI object
 	bool m_bGUI_Main = true; //show Main GUI window?
@@ -36,8 +50,7 @@ private:
 	bool m_bFocused = true; //is the window focused?
 
 	float m_fMovementSpeed = 0.1f; //how fast the camera will move
-
-	vector3 m_v3Mouse = vector3(); //position of the mouse in the window
+	
 	bool m_bFPC = false;// First Person Camera flag
 	bool m_bArcBall = false;// ArcBall flag
 	quaternion m_qArcBall; //ArcBall quaternion
@@ -59,6 +72,14 @@ private:
 	sf::Music m_soundBGM; //background music
 
 public:
+
+	vector3 m_v3Mouse = vector3(); //position of the mouse in the window
+	vector3 m_v3LastMouse = vector3();
+
+	bool m_bRolling;
+
+	void ResetGame();
+
 #pragma region Constructor / Run / Destructor
 	/*
 	USAGE: Constructor
@@ -109,7 +130,7 @@ private:
 	ARGUMENTS: String a_sWindowName = "GLFW" -> Window name
 	OUTPUT: ---
 	*/
-	void InitWindow(String a_sWindowName = "Application");
+	void InitWindow(String a_sWindowName = "MELTDOWN");
 	/*
 	USAGE: Initializes user specific variables, this is executed right after InitWindow,
 	the purpose of this member function is to initialize member variables specific for this project.
@@ -155,7 +176,7 @@ private:
 	ARGUMENTS: vector4 a_v4ClearColor = vector4(-1.0f) -> Color to clear the screen with
 	OUTPUT: ---
 	*/
-	void ClearScreen(vector4 a_v4ClearColor = vector4(-1.0f));
+	void ClearScreen(vector4 a_v4ClearColor = vector4(0.0f));
 	/*
 	USAGE: Will initialize the controllers generically
 	ARGUMENTS:

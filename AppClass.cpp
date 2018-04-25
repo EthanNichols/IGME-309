@@ -1,6 +1,7 @@
 #include "AppClass.h"
 
 using namespace Simplex;
+
 void Application::InitVariables(void)
 {
 	//Set the position and target of the camera
@@ -9,31 +10,21 @@ void Application::InitVariables(void)
 		vector3(0.0f, 0.0f, 1.0f),	//Target
 		AXIS_Y);					//Up
 
+	m_pCameraMngr->SetNearFarPlanes(0.1f, 2000.0f);
+
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
 	//Entity Manager
 	m_pEntityMngr = MyEntityManager::GetInstance();
 
-	for (int i = 0; i < 5; i++) {
-		m_pEntityMngr->AddEntity("models\\model_ground.obj", "ground_" + i);
-		matrix4 groundMatrix = IDENTITY_M4;
-		groundMatrix[3][2] = -(m_pEntityMngr->GetRigidBody()->GetHalfWidth().z * 2) * i;
-		m_pEntityMngr->SetModelMatrix(groundMatrix);
-	}
-
-	m_pEntityMngr->AddEntity("models\\model_ship.obj", "ship");
-	m_pEntityMngr->SetModelMatrix(IDENTITY_M4);
+	//Create the player and chunks for the game
+	Generation::GenerateChunks();
+	Player::CreatePlayer();
 }
 void Application::Update(void)
 {
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
-
-	//Is the ArcBall active?
-	ArcBall();
-
-	//Is the first person camera active?
-	CameraRotation();
 
 	//Update Entity Manager
 	m_pEntityMngr->Update();
@@ -52,43 +43,55 @@ void Application::Display(void)
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
-	static float speed = 0.1f;
-	static int offset = 5;
-
-	//Move the last entity added slowly to the right
-	matrix4 lastMatrix = m_pEntityMngr->GetModelMatrix("ship");// get the model matrix of the last added
-	lastMatrix *= glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, -speed)); //translate it
-	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
-
 	//Get the ship position and set the camera offset relative to the ship
-	vector3 shipPos = vector3(lastMatrix[3][0], lastMatrix[3][1], lastMatrix[3][2]);
+	vector3 shipPos = Player::GetPosition();
 
 	//The specfic camera offset from the model is (15, 0, 60);
-	vector3 cameraPos = shipPos + vector3(15, 75, 120);
+	vector3 cameraPos = shipPos + vector3(0, 10, 25);
 
-	speed += 0.01f;
+	//Update the display of the player and the map
+	Player::Display();
 
 	//Update the camera position
-	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.5f, 1.0f), AXIS_Y);
-
-	for (int i = 0; i < 5; i++) {
-		String name = "ground_" + i;
-		matrix4 groundMatrix = m_pEntityMngr->GetModelMatrix(name);
-		if (groundMatrix[3][2] - (m_pEntityMngr->GetRigidBody(name)->GetHalfWidth().z * 2) > shipPos.z) {
-			groundMatrix[3][2] = -(m_pEntityMngr->GetRigidBody(name)->GetHalfWidth().z * 2) * offset;
-			m_pEntityMngr->SetModelMatrix(groundMatrix, name);
-			offset++;
-		}
-	}
+	m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+	Generation::Display();
 
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
-
 	//draw gui
 	DrawGUI();
 
+#pragma region Meltdown / Scoring
+
+	// Meltdown logic
+	if (meltdownMeter < 1.0f && !Player::GetBoosting()) {
+		meltdownMeter += meltdownMeterChargeRate;
+
+		if (meltdownMeter > 1.0f)
+			meltdownMeter = 1.0f;
+	} else if (Player::GetBoosting()) {
+		meltdownMeter -= boostDepleteRate;
+
+		if (meltdownMeter <= 0.0f) {
+			//Perform a MELTDOWN
+			meltdownMeter = 1.0f;
+			meltdownMultiplier += 1;
+			Player::SetSpeed(meltdownMultiplier);
+			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+		}
+	}
+
+	thisRunScore += Player::GetSpeed() * meltdownMultiplier;
+
+	if (thisRunScore > bestRunScore)
+		bestRunScore = thisRunScore;
+
+#pragma endregion
+
 	//end the current frame (internally swaps the front and back buffers)
 	m_pWindow->display();
+
+	m_v3LastMouse = m_v3Mouse;
 }
 void Application::Release(void)
 {
@@ -98,3 +101,102 @@ void Application::Release(void)
 	//release GUI
 	ShutdownGUI();
 }
+
+void Application::ResetGame() {
+	lastRunScore = thisRunScore;
+	thisRunScore = 0;
+}
+
+#pragma region Ship Controls
+
+void Application::ProcessKeyboard(void)
+{
+	if (!m_bFocused)
+		return;
+
+	static float rotation = 0.0f;
+	static float shipDistFromCenter = 0.0f;
+	float maxDistFromCenter = 50.0f;
+
+	float strafeSpeed = 0.8f;
+	float rollSpeed = 0.1f;
+
+	Simplex::matrix4 lastMatrix = m_pEntityMngr->GetModelMatrix("ship");
+
+	// Strafe left
+	if (abs(shipDistFromCenter - 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(-strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter -= strafeSpeed;
+	}
+
+	// Strafe right
+	if (abs(shipDistFromCenter + 5.0f) < maxDistFromCenter && sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		lastMatrix = glm::translate(Simplex::IDENTITY_M4, Simplex::vector3(strafeSpeed, 0.0f, 0.0f)) * lastMatrix; //translate it
+		shipDistFromCenter += strafeSpeed;
+	}
+
+	// Roll
+	float deltaMouseX = m_v3LastMouse.x - m_v3Mouse.x;
+	
+	if (m_bRolling) {
+		rotation -= deltaMouseX * rollSpeed;
+		lastMatrix *= glm::rotate(Simplex::IDENTITY_M4, -deltaMouseX * rollSpeed, 0.0f, 0.0f, 1.0f); //rotate it
+	}
+	
+	m_pEntityMngr->SetModelMatrix(lastMatrix, "ship"); //return it to its owner
+}
+void Application::ProcessKeyPressed(sf::Event a_event)
+{
+	switch (a_event.key.code)
+	{
+	default: break;
+	//case sf::Keyboard::W:
+	case sf::Keyboard::Space:
+		// We're Boosting
+		if (meltdownMeter > 0.9f) {
+			Player::SetBoosting(true);
+			m_pCameraMngr->SetFOV(50.0f + meltdownMultiplier);
+		}
+		break;
+	}
+}
+void Application::ProcessKeyReleased(sf::Event a_event)
+{
+	switch (a_event.key.code)
+	{
+	default: break;
+	case sf::Keyboard::Escape:
+		m_bRunning = false;
+		break;
+	//case sf::Keyboard::W:
+	case sf::Keyboard::Space:
+		// No longer boosting
+		Player::SetBoosting(false);
+		m_pCameraMngr->SetFOV(50.0f);
+		meltdownMultiplier = 1;
+		Player::SetSpeed(1);
+		break;
+	}
+}
+void Application::ProcessMousePressed(sf::Event a_event)
+{
+	switch (a_event.mouseButton.button)
+	{
+	default: break;
+	case sf::Mouse::Button::Left:
+		m_bRolling = true;
+		break;
+	}
+}
+void Application::ProcessMouseReleased(sf::Event a_event)
+{
+	switch (a_event.mouseButton.button)
+	{
+	default: break;
+	case sf::Mouse::Button::Left:
+		m_bRolling = false;
+		break;
+	}
+}
+
+#pragma endregion
