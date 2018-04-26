@@ -13,7 +13,7 @@ const char* CHUNK_NAME = "ground_";
 const char* PILLAR_NAME = "pillar_";
 
 //The random amount of pillars that can spawn and the clamped max
-float PILLAR_AMOUNT = 1;
+float PILLAR_AMOUNT = 50;
 int MAX_PILLARS = 5;
 
 //Paths to the siz different pillar models
@@ -211,8 +211,8 @@ void ChangeChunkAmount(int amount) {
     DestroyPillars();
 }
 
-void ChangeMaxPillars(int amount) {
-    MAX_PILLARS += amount;
+	void ChangeMaxPillars(int amount) {
+		MAX_PILLARS = amount;
 
     if (MAX_PILLARS <= 1) {
         MAX_PILLARS = 1;
@@ -222,12 +222,11 @@ void ChangeMaxPillars(int amount) {
 ///Update the position and dislay of the chunks
 void Display() {
 
-    //Loop through all of the chunks
-    for (int i = 0; i < CHUNK_AMOUNT; i++) {
-
-        //Get the entitie's matrix
-        Simplex::String name = CHUNK_NAME;
-        name += std::to_string(i);
+		//Loop through all of the chunks
+		for (int i = 0; i < CHUNK_AMOUNT; i++) {
+			//Get the entitie's matrix
+			Simplex::String name = CHUNK_NAME;
+			name += std::to_string(i);
 
         Simplex::matrix4 groundMatrix = g_entityManager->GetModelMatrix(name);
 

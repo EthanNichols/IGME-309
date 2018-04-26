@@ -102,8 +102,6 @@ void Application::Display(void)
 
 	thisRunScore += Player::GetSpeed() * meltdownMultiplier;
 
-	if (thisRunScore > bestRunScore)
-		bestRunScore = thisRunScore;
 
 #pragma endregion
 
@@ -201,7 +199,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	switch (a_event.key.code)
 	{
 	default: break;
-	//case sf::Keyboard::W:
+		//case sf::Keyboard::W:
 	case sf::Keyboard::Space:
 		// We're Boosting
 		if (meltdownMeter > 0.9f) {
@@ -218,6 +216,26 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 			vector3 shipPos = Player::GetPosition();
 			vector3 cameraPos = shipPos + vector3(0, 10, 25);
 			m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
+		}
+		break;
+	case sf::Keyboard::M:
+		if (m_bDebug) {
+			Player::SetSpeed(15.0f);
+		}
+		break;
+	case sf::Keyboard::L:
+		if (m_bDebug) {
+			Generation::ChangeMaxPillars(40.0f);
+		}
+		break;
+	case sf::Keyboard::K:
+		if (m_bDebug) {
+			Generation::ChangeMaxPillars(5.0f);
+		}
+		break;
+	case sf::Keyboard::U:
+		if (m_bDebug) {
+			//Toggle S.O. on or off
 		}
 		break;
 	}
