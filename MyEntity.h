@@ -7,6 +7,8 @@ Date: 2017/07
 
 #include "Simplex\Simplex.h"
 
+#include "MyCollider.h"
+
 namespace Simplex
 {
 
@@ -18,7 +20,8 @@ class MyEntity
 	String m_sUniqueID = ""; //Unique identifier name
 
 	Model* m_pModel = nullptr; //Model associated with this Entity
-	RigidBody* m_pRigidBody = nullptr; //Rigid Body associated with this Entity
+    glm::vec3 m_v3HalfSize;
+	Collider m_collider; //Collider associated with this Entity
 
 	matrix4 m_m4ToWorld = IDENTITY_M4; //Model matrix associated with this Entity
 	MeshManager* m_pMeshMngr = nullptr; //For rendering shapes
@@ -33,7 +36,7 @@ public:
 	-	String a_sUniqueID -> Name wanted as identifier, if not available will generate one
 	Output: class object instance
 	*/
-	MyEntity(String a_sFileName, String a_sUniqueID = "NA");
+	MyEntity(String a_sFileName, Collider collider, String a_sUniqueID = "NA");
 	/*
 	Usage: Copy Constructor
 	Arguments: class object to copy
@@ -77,11 +80,11 @@ public:
 	*/
 	Model* GetModel(void);
 	/*
-	USAGE: Gets the Rigid Body associated with this entity
+	USAGE: Gets the Collider associated with this entity
 	ARGUMENTS: ---
-	OUTPUT: Rigid Body
+	OUTPUT: Collider
 	*/
-	RigidBody* GetRigidBody(void);
+	Collider GetCollider(void);
 	/*
 	USAGE: Will reply to the question, is the Entity Initialized?
 	ARGUMENTS: ---
@@ -93,7 +96,7 @@ public:
 	ARGUMENTS: ---
 	OUTPUT: ---
 	*/
-	void AddToRenderList(bool a_bDrawRigidBody = false);
+	void AddToRenderList(bool a_bDrawCollider = false);
 	/*
 	USAGE: Tells if this entity is colliding with the incoming one
 	ARGUMENTS: MyEntity* const other -> inspected entity
@@ -124,6 +127,7 @@ public:
 	OUTPUT: ---
 	*/
 	void SetAxisVisible(bool a_bSetAxis = true);
+    glm::vec3 GetHalfSize();
 
 private:
 	/*

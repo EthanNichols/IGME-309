@@ -42,7 +42,7 @@ public:
 	-	String a_sUniqueID -> Name wanted as identifier, if not available will generate one
 	OUTPUT: ---
 	*/
-	void AddEntity(String a_sFileName, String a_sUniqueID = "NA");
+	void AddEntity(String a_sFileName, Collider collider, String a_sUniqueID = "NA");
 	/*
 	USAGE: Deletes the Entity Specified by unique ID and removes it from the list
 	ARGUMENTS: uint a_uIndex -> index of the queried entry, if < 0 asks for the last one added
@@ -86,17 +86,17 @@ public:
 	*/
 	Model* GetModel(String a_sUniqueID);
 	/*
-	USAGE: Gets the Rigid Body associated with this entity
+	USAGE: Gets the Collider associated with this entity
 	ARGUMENTS: uint a_uIndex = -1 -> index in the list of entities; if less than 0 it will add it to the last in the list
-	OUTPUT: Rigid Body
+	OUTPUT: Collider
 	*/
-	RigidBody* GetRigidBody(uint a_uIndex = -1);
+	Collider GetCollider(uint a_uIndex = -1);
 	/*
-	USAGE: Gets the Rigid Body associated with this entity
+	USAGE: Gets the Collider associated with this entity
 	ARGUMENTS: String a_sUniqueID -> id of the queried entity
-	OUTPUT: Rigid Body
+	OUTPUT: Collider
 	*/
-	RigidBody* GetRigidBody(String a_sUniqueID);
+	Collider GetCollider(String a_sUniqueID);
 	/*
 	USAGE: Gets the model matrix associated with this entity
 	ARGUMENTS: uint a_uIndex = -1 -> index in the list of entities; if less than 0 it will add it to the last in the list
@@ -145,19 +145,19 @@ public:
 	USAGE: Will add the specified entity to the render list
 	ARGUMENTS:
 	-	uint a_uIndex = -1 -> index (from the list) of the entity queried if < 0 will add all
-	-	bool a_bRigidBody = false -> draw rigid body?
+	-	bool a_bCollider = false -> draw rigid body?
 	OUTPUT: ---
 	*/
-	void AddEntityToRenderList(uint a_uIndex = -1, bool a_bRigidBody = false);
+	void AddEntityToRenderList(uint a_uIndex = -1, bool a_bCollider = false);
 	/*
 	USAGE: Will add the specified entity by uniqueID to the render list
 	ARGUMENTS:
 	-	String a_sUniqueID -> unique identifier of the entity queried
-	-	bool a_bRigidBody = false -> draw rigid body?
+	-	bool a_bCollider = false -> draw collider?
 	OUTPUT: ---
 	*/
-	void AddEntityToRenderList(String a_sUniqueID, bool a_bRigidBody = false);
-	
+	void AddEntityToRenderList(String a_sUniqueID, bool a_bCollider = false);
+    glm::vec3 GetHalfWidth(uint a_uIndex = -1);
 private:
 	/*
 	Usage: constructor

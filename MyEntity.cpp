@@ -1,4 +1,7 @@
 #include "MyEntity.h"
+
+#include "MyCollider.h"
+
 using namespace Simplex;
 std::map<String, MyEntity*> MyEntity::m_IDMap;
 //  Accessors
@@ -10,13 +13,16 @@ void Simplex::MyEntity::SetModelMatrix(matrix4 a_m4ToWorld)
 
 	m_m4ToWorld = a_m4ToWorld;
 	m_pModel->SetModelMatrix(m_m4ToWorld);
-	m_pRigidBody->SetModelMatrix(m_m4ToWorld);
+	m_collider.SetModelMatrix(m_m4ToWorld);
 }
 Model* Simplex::MyEntity::GetModel(void){return m_pModel;}
-RigidBody* Simplex::MyEntity::GetRigidBody(void){	return m_pRigidBody; }
+Collider Simplex::MyEntity::GetCollider(void){	return m_collider; }
 bool Simplex::MyEntity::IsInitialized(void){ return m_bInMemory; }
 String Simplex::MyEntity::GetUniqueID(void) { return m_sUniqueID; }
 void Simplex::MyEntity::SetAxisVisible(bool a_bSetAxis) { m_bSetAxis = a_bSetAxis; }
+glm::vec3 Simplex::MyEntity::GetHalfSize() {
+    return m_v3HalfSize;
+}
 //  MyEntity
 void Simplex::MyEntity::Init(void)
 {
@@ -24,7 +30,6 @@ void Simplex::MyEntity::Init(void)
 	m_bInMemory = false;
 	m_bSetAxis = false;
 	m_pModel = nullptr;
-	m_pRigidBody = nullptr;
 	m_m4ToWorld = IDENTITY_M4;
 	m_sUniqueID = "";
 }
@@ -32,7 +37,7 @@ void Simplex::MyEntity::Swap(MyEntity& other)
 {
 	m_bInMemory = false;
 	std::swap(m_pModel, other.m_pModel);
-	std::swap(m_pRigidBody, other.m_pRigidBody);
+	std::swap(m_collider, other.m_collider);
 	std::swap(m_m4ToWorld, other.m_m4ToWorld);
 	std::swap(m_pMeshMngr, other.m_pMeshMngr);
 	std::swap(m_bInMemory, other.m_bInMemory);
@@ -45,11 +50,11 @@ void Simplex::MyEntity::Release(void)
 	//it is not the job of the entity to release the model, 
 	//it is for the mesh manager to do so.
 	m_pModel = nullptr; 
-	SafeDelete(m_pRigidBody);
 	m_IDMap.erase(m_sUniqueID);
 }
 //The big 3
-Simplex::MyEntity::MyEntity(String a_sFileName, String a_sUniqueID)
+Simplex::MyEntity::MyEntity(String a_sFileName, Collider collider, String a_sUniqueID)
+    : m_collider(collider)
 {
 	Init();
 	m_pModel = new Model();
@@ -60,16 +65,27 @@ Simplex::MyEntity::MyEntity(String a_sFileName, String a_sUniqueID)
 		GenUniqueID(a_sUniqueID);
 		m_sUniqueID = a_sUniqueID;
 		m_IDMap[a_sUniqueID] = this;
-		m_pRigidBody = new RigidBody(m_pModel->GetVertexList()); //generate a rigid body
 		m_bInMemory = true; //mark this entity as viable
 	}
+    glm::vec3 min(std::numeric_limits<float>::max());
+    glm::vec3 max(std::numeric_limits<float>::min());
+    for (auto &pt : m_pModel->GetVertexList()) {
+        if (pt.x > max.x) max.x = pt.x;
+        if (pt.y > max.y) max.y = pt.y;
+        if (pt.z > max.z) max.z = pt.z;
+        if (pt.x < min.x) min.x = pt.x;
+        if (pt.y < min.y) min.y = pt.y;
+        if (pt.z < min.z) min.z = pt.z;
+    }
+    glm::vec3 avg = (min + max) / 2.0f;
+    m_v3HalfSize = max - avg;
 }
 Simplex::MyEntity::MyEntity(MyEntity const& other)
+    : m_collider(other.m_collider)
 {
 	m_bInMemory = other.m_bInMemory;
 	m_pModel = other.m_pModel;
 	//generate a new rigid body we do not share the same rigid body as we do the model
-	m_pRigidBody = new RigidBody(m_pModel->GetVertexList()); 
 	m_m4ToWorld = other.m_m4ToWorld;
 	m_pMeshMngr = other.m_pMeshMngr;
 	m_sUniqueID = other.m_sUniqueID;
@@ -88,7 +104,7 @@ MyEntity& Simplex::MyEntity::operator=(MyEntity const& other)
 }
 MyEntity::~MyEntity(){Release();}
 //--- Methods
-void Simplex::MyEntity::AddToRenderList(bool a_bDrawRigidBody)
+void Simplex::MyEntity::AddToRenderList(bool a_bDrawCollider)
 {
 	//if not in memory return
 	if (!m_bInMemory)
@@ -98,8 +114,8 @@ void Simplex::MyEntity::AddToRenderList(bool a_bDrawRigidBody)
 	m_pModel->AddToRenderList();
 	
 	//draw rigid body
-	if(a_bDrawRigidBody)
-		m_pRigidBody->AddToRenderList();
+	if(a_bDrawCollider)
+		m_collider.AddToRenderList();
 
 	if (m_bSetAxis)
 		m_pMeshMngr->AddAxisToRenderList(m_m4ToWorld);
@@ -110,7 +126,7 @@ bool Simplex::MyEntity::IsColliding(MyEntity* const other)
 	if (!m_bInMemory || !other->m_bInMemory)
 		return true;
 
-	return m_pRigidBody->IsColliding(other->GetRigidBody());
+	return m_collider.IsColliding(other->GetCollider());
 }
 MyEntity* Simplex::MyEntity::GetEntity(String a_sUniqueID)
 {

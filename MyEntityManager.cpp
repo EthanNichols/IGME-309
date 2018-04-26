@@ -1,4 +1,7 @@
 #include "MyEntityManager.h"
+
+#include "MyCollider.h"
+
 using namespace Simplex;
 //  MyEntityManager
 MyEntityManager* MyEntityManager::m_pInstance = nullptr;
@@ -68,28 +71,24 @@ Model* Simplex::MyEntityManager::GetModel(String a_sUniqueID)
 	}
 	return nullptr;
 }
-RigidBody* Simplex::MyEntityManager::GetRigidBody(uint a_uIndex)
+Collider Simplex::MyEntityManager::GetCollider(uint a_uIndex)
 {
-	//if the list is empty return blank
-	if (m_entityList.size() == 0)
-		return nullptr;
-
 	// if out of bounds
 	if (a_uIndex >= m_uEntityCount)
 		a_uIndex = m_uEntityCount - 1;
 
-	return m_entityList[a_uIndex]->GetRigidBody();
+	return m_entityList[a_uIndex]->GetCollider();
 }
-RigidBody* Simplex::MyEntityManager::GetRigidBody(String a_sUniqueID)
+Collider Simplex::MyEntityManager::GetCollider(String a_sUniqueID)
 {
 	//Get the entity
 	MyEntity* pTemp = MyEntity::GetEntity(a_sUniqueID);
 	//if the entity exists
 	if (pTemp)
 	{
-		return pTemp->GetRigidBody();
+		return pTemp->GetCollider();
 	}
-	return nullptr;
+    throw std::runtime_error("shit got broke yo");
 }
 matrix4 Simplex::MyEntityManager::GetModelMatrix(uint a_uIndex)
 {
@@ -177,10 +176,10 @@ void Simplex::MyEntityManager::Update(void)
 		}
 	}
 }
-void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
+void Simplex::MyEntityManager::AddEntity(String a_sFileName, Collider collider, String a_sUniqueID)
 {
 	//Create a temporal entity to store the object
-	MyEntity* pTemp = new MyEntity(a_sFileName, a_sUniqueID);
+	MyEntity* pTemp = new MyEntity(a_sFileName, collider, a_sUniqueID);
 	//if I was able to generate it add it to the list
 	if (pTemp->IsInitialized())
 	{
@@ -240,7 +239,7 @@ MyEntity* Simplex::MyEntityManager::GetEntity(uint a_uIndex)
 
 	return m_entityList[a_uIndex];
 }
-void Simplex::MyEntityManager::AddEntityToRenderList(uint a_uIndex, bool a_bRigidBody)
+void Simplex::MyEntityManager::AddEntityToRenderList(uint a_uIndex, bool a_bCollider)
 {
 	//if out of bounds will do it for all
 	if (a_uIndex >= m_uEntityCount)
@@ -248,21 +247,28 @@ void Simplex::MyEntityManager::AddEntityToRenderList(uint a_uIndex, bool a_bRigi
 		//add for each one in the entity list
 		for (a_uIndex = 0; a_uIndex < m_uEntityCount; ++a_uIndex)
 		{
-			m_entityList[a_uIndex]->AddToRenderList(a_bRigidBody);
+			m_entityList[a_uIndex]->AddToRenderList(a_bCollider);
 		}
 	}
 	else //do it for the specified one
 	{
-		m_entityList[a_uIndex]->AddToRenderList(a_bRigidBody);
+		m_entityList[a_uIndex]->AddToRenderList(a_bCollider);
 	}
 }
-void Simplex::MyEntityManager::AddEntityToRenderList(String a_sUniqueID, bool a_bRigidBody)
+void Simplex::MyEntityManager::AddEntityToRenderList(String a_sUniqueID, bool a_bCollider)
 {
 	//Get the entity
 	MyEntity* pTemp = MyEntity::GetEntity(a_sUniqueID);
 	//if the entity exists
 	if (pTemp)
 	{
-		pTemp->AddToRenderList(a_bRigidBody);
+		pTemp->AddToRenderList(a_bCollider);
 	}
+}
+
+glm::vec3 Simplex::MyEntityManager::GetHalfWidth(uint a_uIndex) {
+    if (a_uIndex >= m_entityList.size())
+        a_uIndex = m_entityList.size() - 1;
+
+    return m_entityList[a_uIndex]->GetHalfSize();
 }
