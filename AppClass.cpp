@@ -33,9 +33,6 @@ void Application::Update(void)
 
 	CameraRotation();
 
-	// Set the ship's velocity (check for/resolve collisions)
-	Player::SetVelocity();
-
 	//Update the camera position
 	if (!m_bDebug) {
 		//Get the ship position and set the camera offset relative to the ship
@@ -46,6 +43,23 @@ void Application::Update(void)
 		vector3 cameraPos = shipPos + vector3(0, 10, 25);
 		m_pCameraMngr->SetPositionTargetAndUp(cameraPos, cameraPos - vector3(0, 0.15f, 0.7f), AXIS_Y);
 	}
+
+    // check collisions
+    Collider &pc = m_pEntityMngr->GetCollider("ship");
+    std::vector<std::string> &search_space = m_bDebug ? Generation::GetAllPillars() : Generation::GetCurrentChunk();
+    bool collided = false;
+    float dist = 0.0f;
+    for (auto &name : search_space) {
+        if (m_pEntityMngr->GetCollider(name).IsColliding(pc)) {
+            auto opos = m_pEntityMngr->GetCollider(name).GetModelMatrix() * glm::vec4(0, 0, 0, 1);
+            auto tpos = pc.GetModelMatrix() * glm::vec4(0, 0, 0, 1);
+            auto diff = opos - tpos;
+            dist = glm::length(diff) * 2;
+            collided = true;
+            break;
+        }
+    }
+    Player::SetVelocity(collided, dist);
 
 	//Add objects to render list
 	if (!m_bDebug) {

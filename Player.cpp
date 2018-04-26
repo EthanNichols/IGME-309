@@ -49,14 +49,13 @@ namespace Player {
 		return Simplex::vector3(vec4Pos.x, vec4Pos.y, vec4Pos.z);
 	}
 
-	void SetVelocity() {
+	void SetVelocity(bool collided, float distance) {
 
 		// Check for a collision
 
-		//If there is a collision...
-		    // Give the ship an x/z velocity so it moves away from the collision center
-		    // Alter the ship's health accordingly
-				// health -= (GetSpeed() * hullDurability);
+        if (collided) {
+            velocity.x += distance;
+        }
 
 		// Otherwise...
 		velocity = Simplex::vector3(0.0f, 0.0f, GetSpeed());

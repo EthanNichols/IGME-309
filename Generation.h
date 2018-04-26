@@ -19,4 +19,7 @@ namespace Generation {
 
 	void SpawnPillars(Simplex::vector3 centerPos);
 	void DestroyPillars();
+
+    std::vector<std::string> &GetCurrentChunk();
+    std::vector<std::string> &GetAllPillars();
 }

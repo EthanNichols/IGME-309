@@ -20,7 +20,7 @@ namespace Player {
 
 	Simplex::vector3 GetPosition();
 
-	void SetVelocity();
+	void SetVelocity(bool collided, float distance);
 
 	void SetHealth(float h);
 

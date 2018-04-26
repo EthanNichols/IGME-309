@@ -35,8 +35,8 @@ Simplex::Collider pillarColliders[6] = {
     }, 4.5f),
     Simplex::Collider({
         glm::vec2(6.0f, 6.0f),
-		glm::vec2(2.5f, 7.0f),
-		glm::vec2(1.0f, 15.0f),
+        glm::vec2(2.5f, 7.0f),
+        glm::vec2(1.0f, 15.0f),
         glm::vec2(-4.0f, 15.0f),
         glm::vec2(-4.0f, -1.0f),
         glm::vec2(6.0f, -1.0f)
@@ -87,6 +87,9 @@ float zOffset = 0.7f;
 int chunkZOffset = 0;
 
 Simplex::MyEntityManager* g_entityManager;
+
+static std::vector<std::string> current_chunk;
+static std::vector<std::string> all_pillars;
 
 namespace Generation {
 
@@ -211,8 +214,8 @@ void ChangeChunkAmount(int amount) {
     DestroyPillars();
 }
 
-	void ChangeMaxPillars(int amount) {
-		MAX_PILLARS = amount;
+void ChangeMaxPillars(int amount) {
+    MAX_PILLARS = amount;
 
     if (MAX_PILLARS <= 1) {
         MAX_PILLARS = 1;
@@ -222,11 +225,11 @@ void ChangeChunkAmount(int amount) {
 ///Update the position and dislay of the chunks
 void Display() {
 
-		//Loop through all of the chunks
-		for (int i = 0; i < CHUNK_AMOUNT; i++) {
-			//Get the entitie's matrix
-			Simplex::String name = CHUNK_NAME;
-			name += std::to_string(i);
+    //Loop through all of the chunks
+    for (int i = 0; i < CHUNK_AMOUNT; i++) {
+        //Get the entitie's matrix
+        Simplex::String name = CHUNK_NAME;
+        name += std::to_string(i);
 
         Simplex::matrix4 groundMatrix = g_entityManager->GetModelMatrix(name);
 
@@ -241,8 +244,6 @@ void Display() {
             //Set the new position for the chunk
             g_entityManager->SetModelMatrix(groundMatrix, name);
 
-            DestroyPillars();
-
             //Spawn pillars at the new chunk position
             SpawnPillars(Mat4Position(groundMatrix));
 
@@ -252,6 +253,15 @@ void Display() {
             chunkZOffset++;
         }
     }
+
+    DestroyPillars();
+}
+
+void DeletePillar(std::string name) {
+    g_entityManager->RemoveEntity(name);
+    all_pillars.erase(std::remove_if(all_pillars.begin(), all_pillars.end(), [&name](std::string f) { return f == name; }), all_pillars.end());
+    current_chunk.erase(std::remove_if(current_chunk.begin(), current_chunk.end(), [&name](std::string f) { return f == name; }), current_chunk.end());
+    pillarsDeleted++;
 }
 
 ///Destroy pillars that are to far away or behind the player
@@ -270,18 +280,26 @@ void DestroyPillars() {
         //Skip matrixes that aren't associated with a pillar
         if (pillarMatrix == Simplex::IDENTITY_M4) { continue; }
 
-        //Test if the pillar is behind the player and destroy it
         if (Mat4Position(pillarMatrix).z > Player::GetPosition().z) {
-            g_entityManager->RemoveEntity(name);
-            pillarsDeleted++;
-        }
-
-        //Test if the pillar is to far away from the player and destroy it
-        if (glm::distance(Mat4Position(pillarMatrix).z, Player::GetPosition().z) > (chunks - 1) * chunkSize.z * 2) {
-            g_entityManager->RemoveEntity(name);
-            pillarsDeleted++;
+            //Test if the pillar is behind the player and destroy it
+            DeletePillar(name);
+        } else if (Mat4Position(pillarMatrix).z < chunkSize.z * 2) {
+            if (std::find(current_chunk.begin(), current_chunk.end(), name) == current_chunk.end()) {
+                current_chunk.push_back(name);
+            }
+        } else if (glm::distance(Mat4Position(pillarMatrix).z, Player::GetPosition().z) > (chunks - 1) * chunkSize.z * 2) {
+            //Test if the pillar is to far away from the player and destroy it
+            DeletePillar(name);
         }
     }
+}
+
+std::vector<std::string> &GetCurrentChunk() {
+    return current_chunk;
+}
+
+std::vector<std::string> &GetAllPillars() {
+    return all_pillars;
 }
 
 /// Spawn pillars relative to the position
@@ -296,6 +314,9 @@ void SpawnPillars(Simplex::vector3 centerPos) {
         //Set the name of the pillar so it can be destroyed
         Simplex::String name = PILLAR_NAME;
         name += std::to_string(pillarCount);
+        if (std::find(all_pillars.begin(), all_pillars.end(), name) == all_pillars.end()) {
+            all_pillars.push_back(name);
+        }
 
         //Create a new pillar
         int ridx = std::rand() % 6;
