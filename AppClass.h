@@ -49,7 +49,7 @@ private:
 
 	bool m_bFocused = true; //is the window focused?
 
-	float m_fMovementSpeed = 0.1f; //how fast the camera will move
+	float m_fMovementSpeed = 0.5f; //how fast the camera will move
 	float strafeModifier = 0.025f;
 	
 	bool m_bFPC = false;// First Person Camera flag

@@ -28,40 +28,42 @@ char* pillarFiles[6] = {
 
 Simplex::Collider pillarColliders[6] = {
     Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
+        glm::vec2(6.0f, 5.0f),
+        glm::vec2(6.0f, -1.0f),
+        glm::vec2(-6.0f, -1.0f),
+        glm::vec2(-6.0f, 6.5f)
+    }, 4.5f),
+    Simplex::Collider({
+        glm::vec2(6.0f, 6.0f),
+		glm::vec2(2.5f, 7.0f),
+		glm::vec2(1.0f, 15.0f),
+        glm::vec2(-4.0f, 15.0f),
+        glm::vec2(-4.0f, -1.0f),
+        glm::vec2(6.0f, -1.0f)
+    }, 5.0f),
+    Simplex::Collider({
+        glm::vec2(5.0f, 10.0f),
+        glm::vec2(-5.0f, 10.0f),
+        glm::vec2(-5.0f, -1.0f),
+        glm::vec2(5.0f, -1.0f)
     }, 3.0f),
     Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
+        glm::vec2(4.0f, 14.0f),
+        glm::vec2(5.0f, -1.0f),
+        glm::vec2(-5.0f, -1.0f),
+        glm::vec2(-4.0f, 10.0f)
+    }, 4.5f),
+    Simplex::Collider({
+        glm::vec2(2.0f, 15.0f),
+        glm::vec2(3.0f, -1.0f),
+        glm::vec2(-3.0f, -1.0f),
+        glm::vec2(-2.0f, 15.0f)
     }, 3.0f),
     Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
-    }, 3.0f),
-    Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
-    }, 3.0f),
-    Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
-    }, 3.0f),
-    Simplex::Collider({
-        glm::vec2(1.0f, 1.0f),
-        glm::vec2(1.0f, -1.0f),
-        glm::vec2(-1.0f, -1.0f),
-        glm::vec2(-1.0f, 1.0f)
+        glm::vec2(3.0f, 2.0f),
+        glm::vec2(3.0f, -1.0f),
+        glm::vec2(-3.0f, -1.0f),
+        glm::vec2(-3.0f, 2.0f)
     }, 3.0f)
 };
 
